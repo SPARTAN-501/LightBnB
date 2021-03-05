@@ -51,7 +51,6 @@ const getUserWithId = function(id) {
 }
 exports.getUserWithId = getUserWithId;
 
-
 /**
  * Add a new user to the database.
  * @param {{name: string, password: string, email: string}} user
@@ -80,7 +79,12 @@ exports.addUser = addUser;
  * @return {Promise<[{}]>} A promise to the reservations.
  */
 const getAllReservations = function(guest_id, limit = 10) {
-  return getAllProperties(null, 2);
+  return pool.query(`
+  SELECT * FROM reservations
+  WHERE guest_id = ${guest_id}
+  LIMIT $1;
+  `, [limit])
+  .then(res => res.rows);
 }
 exports.getAllReservations = getAllReservations;
 
